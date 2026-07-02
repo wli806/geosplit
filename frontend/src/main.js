@@ -3,6 +3,7 @@ import { getSite } from "./api.js";
 import { drawParcel, bboxOf, setBasemap } from "./map2d.js";
 import { renderInfo } from "./panels.js";
 import { buildLayerList, setBbox } from "./layers.js";
+import { initEdges } from "./edges.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -19,6 +20,7 @@ async function run() {
     if (p.geometry) {
       drawParcel(p.geometry);
       setBbox(bboxOf(p.geometry, 50));
+      initEdges(p.geometry);
     }
     await buildLayerList("2d");
   } catch (e) {

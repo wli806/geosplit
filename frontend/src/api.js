@@ -13,3 +13,12 @@ export const getLayers = () => j(`${BASE}/layers`);
 
 export const getLayer = (id, bbox) =>
   j(`${BASE}/layers/${id}?bbox=${bbox.join(",")}`);
+
+export const getEnvelope = async (geometry, edgeRoles) => {
+  const r = await fetch(`${BASE}/envelope`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ geometry, edge_roles: edgeRoles }),
+  });
+  return r.json();
+};

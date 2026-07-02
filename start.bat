@@ -5,7 +5,7 @@ echo Starting V2 backend (8001) and frontend (5501)...
 
 REM V2:后端 = api.app(五层结构),前端 = frontend
 start "v2-backend"  cmd /k py -m uvicorn api.app:app --port 8001 --app-dir "%~dp0backend"
-start "v2-frontend" cmd /k py -m http.server 5501 --directory "%~dp0frontend"
+start "v2-frontend" cmd /k py "%~dp0frontend\serve.py" 5501
 
 echo Waiting for backend to come up (max 25s)...
 set /a tries=0

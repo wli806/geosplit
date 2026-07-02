@@ -5,9 +5,12 @@
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 from domain.site import assemble_site
+from domain.envelope import compute_envelope
 from render import layers as render_layers
+from render import envelope as render_envelope
 
 app = FastAPI(title="Subdivision Feasibility — backend (V2)")
 app.add_middleware(CORSMiddleware, allow_origins=["*"],
@@ -46,3 +49,17 @@ def layer(layer_id: str, bbox: str):
     if payload is None:
         return {"error": f"unknown layer: {layer_id}"}
     return payload
+
+
+class EnvelopeRequest(BaseModel):
+    geometry: dict     # 地块 GeoJSON Polygon(前端已有,来自 /site 的 parcel.value.geometry)
+    edge_roles: list    # 按外环边顺序,每条边 "front" | "back" | "side"
+
+
+@app.post("/envelope")
+def envelope(req: EnvelopeRequest):
+    """地块多边形 + 每条边角色(用户在地图上点选)→ 退界后可建范围 + 面积。"""
+    result = compute_envelope(req.geometry, req.edge_roles)
+    if result.geometry is None:
+        return {"error": "边数与角色数量不匹配,或退界后无剩余空间", "edge_roles": result.edge_roles}
+    return render_envelope.to_payload(result)

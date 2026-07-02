@@ -48,3 +48,44 @@ export function addOverlay(id, geojson, style) {
 export function removeOverlay(id) {
   if (overlays[id]) { map.removeLayer(overlays[id]); delete overlays[id]; }
 }
+
+// 地块边线:拆成每条边独立可点(退界角色选择用)。
+// 每条边画两条线:可见的细线(vis)+ 叠在上面看不见但很粗的判定线(hit,opacity 接近 0 但仍可点击)——
+// 边短/边多时(比如十七边形)光靠细线的像素宽度很难点中,hit 线把可点范围放大到 20px。
+export const UNASSIGNED = "#333";
+const HILITE = "#ffca28";
+let edgeLayers = [];   // [{ vis, hit, color }]
+
+export function drawEdges(geometry, { onClick, onHover } = {}) {
+  clearEdges();
+  const ring = geometry.coordinates[0];
+  for (let i = 0; i < ring.length - 1; i++) {
+    const latlngs = [[ring[i][1], ring[i][0]], [ring[i + 1][1], ring[i + 1][0]]];
+    const vis = L.polyline(latlngs, { color: UNASSIGNED, weight: 5, opacity: 0.9 }).addTo(map);
+    const hit = L.polyline(latlngs, { color: "#000", weight: 20, opacity: 0.02 }).addTo(map);
+    hit.on("click", () => onClick && onClick(i));
+    hit.on("mouseover", () => onHover && onHover(i, true));
+    hit.on("mouseout", () => onHover && onHover(i, false));
+    edgeLayers.push({ vis, hit, color: UNASSIGNED });
+  }
+}
+
+export function styleEdge(i, color) {
+  const e = edgeLayers[i];
+  if (!e) return;
+  e.color = color;
+  e.vis.setStyle({ color });
+}
+
+// 悬停高亮(地图上悬停边、或悬停侧栏列表项时互相联动)。
+export function highlightEdge(i, on) {
+  const e = edgeLayers[i];
+  if (!e) return;
+  if (on) e.vis.setStyle({ color: HILITE, weight: 8 });
+  else e.vis.setStyle({ color: e.color, weight: 5 });
+}
+
+export function clearEdges() {
+  edgeLayers.forEach(({ vis, hit }) => { map.removeLayer(vis); map.removeLayer(hit); });
+  edgeLayers = [];
+}
