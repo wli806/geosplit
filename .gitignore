@@ -1,0 +1,24 @@
+# 运行时缓存(重新跑一次会自动重新生成,别进版本库)
+backend/.cache/
+__pycache__/
+*.pyc
+
+# Claude Code 本机专属设置(团队共享设置见 .claude/settings.json)
+.claude/settings.local.json
+
+# 旧 Stage 0 参考代码,本地留着,不上传
+backup/
+
+# 本地草稿/测试产物
+命中查询.xlsx
+回答.txt
+
+# 官方 AUP PDF 原文 + 提取文本(版权material,public 仓库不带;数值结论已写进 Records/AUP-MHU规则数值.md)
+Records/refs/AUP-H5-MHU-operative.pdf
+Records/refs/AUP-H5-MHU.txt
+Records/refs/AUP-E38-Subdivision-Urban.pdf
+Records/refs/AUP-E38.txt
+
+# OS
+Thumbs.db
+.DS_Store
