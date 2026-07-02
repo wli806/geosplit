@@ -2,8 +2,6 @@
 backend/.cache/
 __pycache__/
 *.pyc
-
-# Claude Code 本机专属设置(团队共享设置见 .claude/settings.json)
 .claude/settings.local.json
 
 # 旧 Stage 0 参考代码,本地留着,不上传
