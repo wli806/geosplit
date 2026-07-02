@@ -13,6 +13,9 @@ backup/
 命中查询.xlsx
 回答.txt
 
+# 给 AI 助手看的项目说明(含私人邮箱/内部策略,public 仓库不带)
+CLAUDE.md
+
 # 官方 AUP PDF 原文 + 提取文本(版权material,public 仓库不带;数值结论已写进 Records/AUP-MHU规则数值.md)
 Records/refs/AUP-H5-MHU-operative.pdf
 Records/refs/AUP-H5-MHU.txt
